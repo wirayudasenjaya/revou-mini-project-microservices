@@ -41,6 +41,13 @@ export class OrderService {
       quantity: createOrderRequest.quantity,
     });
 
+    sendToQueue("update-product-quantity", {
+      id: orders,
+      product_id: createOrderRequest.product_id,
+      user_id: createOrderRequest.user_id,
+      quantity: createOrderRequest.quantity,
+    });
+
     return {
       id: orders,
     };

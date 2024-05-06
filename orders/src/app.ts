@@ -1,5 +1,6 @@
 import express from "express";
 import "dotenv/config";
+import morgan from 'morgan';
 
 import { OrderController } from "./controllers/order-controller";
 import { OrderService } from "./services/order-service";
@@ -17,6 +18,7 @@ async function startServer() {
     const orderController = new OrderController(orderService);
 
     app.use(express.json());
+    app.use(morgan("dev"));
 
     const orderRouter = express.Router();
     orderRouter.get("/order", orderController.getAll);
