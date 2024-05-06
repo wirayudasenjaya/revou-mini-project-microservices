@@ -31,3 +31,9 @@ export interface AddProductRequest {
 	quantity: number;
 	price: number;
 }
+
+export interface EditProductRequest {
+	name: string;
+	quantity: number;
+	price: number;
+}

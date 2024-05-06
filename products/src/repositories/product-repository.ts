@@ -75,6 +75,30 @@ export class ProductRepository {
     });
   }
 
+  edit(productModel: ProductModel, id: number): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      const updatedData = {
+        name: productModel.name,
+        quantity: productModel.quantity,
+        price: productModel.price
+      }
+
+      const q = `UPDATE products SET ? WHERE id = ?`;
+      this.db.query(
+        q,
+        [updatedData, id],
+        (err, rows: mysql2.ResultSetHeader) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          resolve(rows.insertId);
+        }
+      );
+    });
+  }
+
   delete(id: number) {
     return new Promise((resolve, reject) => {
       this.db.query(

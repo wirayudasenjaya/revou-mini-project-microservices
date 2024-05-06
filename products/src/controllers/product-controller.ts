@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { ProductService } from "../services/product-service";
-import { AddProductRequest } from '../models/product-model';
+import { AddProductRequest, EditProductRequest } from '../models/product-model';
 
 export class ProductController {
   private productService: ProductService;
@@ -70,6 +70,27 @@ export class ProductController {
       res.status(500).json({ error: errorMsg });
     }
   };
+
+  edit = async (req: express.Request, res: express.Response) => {
+    try {
+      const editProductRequest = req.body as EditProductRequest;
+      const product_id = Number(req.params.product_id);
+
+      const editProductResponse = await this.productService.edit(editProductRequest, product_id)
+
+      res.status(200).json({
+        data: editProductResponse,
+      });
+    } catch (e) {
+      let errorMsg = "Server error";
+
+      if (e instanceof Error) {
+        errorMsg = e.message;
+      }
+
+      res.status(500).json({ error: errorMsg });
+    }
+  }
 
   delete = async (req: express.Request, res: express.Response) => {
     try {
