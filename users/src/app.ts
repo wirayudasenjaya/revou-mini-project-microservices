@@ -1,5 +1,6 @@
 import express from "express";
 import "dotenv/config";
+import morgan from 'morgan';
 
 import { UserController } from "./controllers/user-controller";
 import { UserService } from "./services/user-service";
@@ -17,6 +18,7 @@ async function startServer() {
     const userController = new UserController(userService);
 
     app.use(express.json());
+    app.use(morgan("dev"));
 
     const usersRouter = express.Router();
     usersRouter.post("/users/login", userController.login);
