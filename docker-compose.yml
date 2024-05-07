@@ -41,13 +41,13 @@ services:
     ports:
       - "5000:5000"
     environment:
-      DATABASE_HOST: host.docker.internal
-      DATABASE_PORT: 3306
-      DATABASE_USERNAME: root
-      DATABASE_PASSWORD: "123456"
-      DATABASE_TABLE: user
-      PORT: 5000
-      JWT_SECRET: "6c9d0a82b23d78e94ad0c22a5411c168025a6528186cdda949be7598def57bdb"
+      DATABASE_HOST: 
+      DATABASE_PORT: 
+      DATABASE_USERNAME: 
+      DATABASE_PASSWORD: 
+      DATABASE_TABLE: 
+      PORT: 
+      JWT_SECRET: 
     networks:
       - microservices
 
@@ -57,13 +57,13 @@ services:
     ports:
       - "5001:5001"
     environment:
-      DATABASE_HOST: host.docker.internal
-      DATABASE_PORT: 3306
-      DATABASE_USERNAME: root
-      DATABASE_PASSWORD: "123456"
-      DATABASE_TABLE: product
-      PORT: 5001
-      RABBITMQ_HOST: rabbitmq
+      DATABASE_HOST: 
+      DATABASE_PORT: 
+      DATABASE_USERNAME: 
+      DATABASE_PASSWORD: 
+      DATABASE_TABLE: 
+      PORT: 
+      RABBITMQ_HOST: 
     networks:
       - microservices
     depends_on:
@@ -75,13 +75,13 @@ services:
     ports:
       - "5002:5002"
     environment:
-      DATABASE_HOST: host.docker.internal
-      DATABASE_PORT: 3306
-      DATABASE_USERNAME: root
-      DATABASE_PASSWORD: "123456"
-      DATABASE_TABLE: order
-      PORT: 5002
-      RABBITMQ_HOST: rabbitmq
+      DATABASE_HOST: 
+      DATABASE_PORT: 
+      DATABASE_USERNAME: 
+      DATABASE_PASSWORD: 
+      DATABASE_TABLE: 
+      PORT: 
+      RABBITMQ_HOST: 
     networks:
       - microservices
     depends_on:
@@ -93,13 +93,13 @@ services:
     ports:
       - "5003:5003"
     environment:
-      DATABASE_HOST: host.docker.internal
-      DATABASE_PORT: 3306
-      DATABASE_USERNAME: root
-      DATABASE_PASSWORD: "123456"
-      DATABASE_TABLE: notification
-      PORT: 5003
-      RABBITMQ_HOST: rabbitmq
+      DATABASE_HOST: 
+      DATABASE_PORT: 
+      DATABASE_USERNAME: 
+      DATABASE_PASSWORD: 
+      DATABASE_TABLE: 
+      PORT: 
+      RABBITMQ_HOST: 
     networks:
       - microservices
     depends_on:
