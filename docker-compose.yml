@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  kong:
+    image: kong
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+    environment:
+      KONG_DATABASE: off
+      KONG_DECLARATIVE_CONFIG: /kong/declarative/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_ADMIN_GUI_URL: http://localhost:8002
+    volumes:
+      - ./kong.yml:/kong/declarative/kong.yml
+    networks:
+      - microservices
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - microservices
+    healthcheck:
+        test: [ "CMD", "rabbitmqctl", "status", "-f", "http://localhost:15672"]
+        interval: 5s
+        timeout: 20s
+        retries: 5
+
+  user-service:
+    container_name: user-service
+    build: ./users
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_HOST: host.docker.internal
+      DATABASE_PORT: 3306
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: "123456"
+      DATABASE_TABLE: user
+      PORT: 5000
+      JWT_SECRET: "6c9d0a82b23d78e94ad0c22a5411c168025a6528186cdda949be7598def57bdb"
+    networks:
+      - microservices
+
+  product-service:
+    container_name: product-service
+    build: ./products
+    ports:
+      - "5001:5001"
+    environment:
+      DATABASE_HOST: host.docker.internal
+      DATABASE_PORT: 3306
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: "123456"
+      DATABASE_TABLE: product
+      PORT: 5001
+      RABBITMQ_HOST: rabbitmq
+    networks:
+      - microservices
+    depends_on:
+      - rabbitmq
+
+  order-service:
+    container_name: order-service
+    build: ./orders
+    ports:
+      - "5002:5002"
+    environment:
+      DATABASE_HOST: host.docker.internal
+      DATABASE_PORT: 3306
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: "123456"
+      DATABASE_TABLE: order
+      PORT: 5002
+      RABBITMQ_HOST: rabbitmq
+    networks:
+      - microservices
+    depends_on:
+      - rabbitmq
+
+  notification-service:
+    container_name: notification-service
+    build: ./notifications
+    ports:
+      - "5003:5003"
+    environment:
+      DATABASE_HOST: host.docker.internal
+      DATABASE_PORT: 3306
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: "123456"
+      DATABASE_TABLE: notification
+      PORT: 5003
+      RABBITMQ_HOST: rabbitmq
+    networks:
+      - microservices
+    depends_on:
+      - rabbitmq
+
+networks:
+  microservices:
+    driver: bridge

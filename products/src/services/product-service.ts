@@ -79,7 +79,6 @@ export class ProductService {
         const product = await this.productRepository.getOne(order.product_id);
 
         const newQuantity = product.quantity - order.quantity;
-        console.log(newQuantity)
 
         const editQuantity = await this.productRepository.edit({
           id: product.id,

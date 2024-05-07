@@ -1,7 +1,10 @@
 import * as amqp from "amqplib";
 
 async function consumeFromQueue(queue: string, callback: (message: any) => void) {
-  const connection = await amqp.connect("amqp://localhost");
+  const rabbitmqHost = process.env.RABBITMQ_HOST || "localhost";
+  const rabbitmqUrl = `amqp://${rabbitmqHost}`
+  
+  const connection = await amqp.connect(rabbitmqUrl);
   const channel = await connection.createChannel();
   await channel.assertQueue(queue);
   channel.consume(queue, (msg) => {

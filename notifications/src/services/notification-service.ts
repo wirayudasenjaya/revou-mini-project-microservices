@@ -1,5 +1,4 @@
 import { consumeFromQueue } from "../consumers/notification-consumer";
-import { CreateNotificationRequest } from "../models/notification-model";
 import { NotificationRepository } from "../repositories/notification-repository";
 
 export class NotificationService {
