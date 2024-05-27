@@ -3,6 +3,7 @@ export interface OrderModel {
   product_id: number;
   user_id: number;
   quantity: number;
+  status: string;
 }
 
 export interface GetAllOrderResponse {
@@ -10,6 +11,7 @@ export interface GetAllOrderResponse {
   product_id: number;
   user_id: number;
   quantity: number;
+  status: string;
 }
 
 export interface CreateOrderRequest {

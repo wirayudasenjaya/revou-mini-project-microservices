@@ -29,6 +29,7 @@ async function startServer() {
 
     app.use(productRouter);
 
+    productService.getProductQuantity();
     productService.updateProductQuantity();
   } catch (e) {
     console.error("Failed to initialize app:", e);

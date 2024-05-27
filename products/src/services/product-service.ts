@@ -1,4 +1,4 @@
-import { consumeFromQueue } from "../consumers/product-consumer";
+import { consumeFromQueue, sendToQueue } from "../consumers/product-consumer";
 import {
   AddProductRequest,
   EditProductRequest,
@@ -50,18 +50,21 @@ export class ProductService {
     };
   }
 
-	async edit(editProductRequest: EditProductRequest, id: number) {
-		const editProduct = await this.productRepository.edit({
-			id: 0,
-			name: editProductRequest.name,
-			quantity: editProductRequest.quantity,
-			price: editProductRequest.price
-		}, id);
+  async edit(editProductRequest: EditProductRequest, id: number) {
+    const editProduct = await this.productRepository.edit(
+      {
+        id: 0,
+        name: editProductRequest.name,
+        quantity: editProductRequest.quantity,
+        price: editProductRequest.price,
+      },
+      id
+    );
 
-		return {
+    return {
       message: "updated",
     };
-	}
+  }
 
   async delete(id: number) {
     const deleteProduct = await this.productRepository.delete(id);
@@ -71,21 +74,42 @@ export class ProductService {
     };
   }
 
-	async updateProductQuantity() {
-    consumeFromQueue("update-product-quantity", async (order: any) => {
-      console.log("Update Quantity", order);
+  async getProductQuantity() {
+    consumeFromQueue("product-availability", async (id: number) => {
+      try {
+        const product = await this.productRepository.getOne(id);
 
+        sendToQueue("get-product-quantity", {
+          productId: id,
+          quantity: product.quantity
+        });
+      } catch (e) {
+        console.error("Error getting quantity:", e);
+
+        sendToQueue("get-product-quantity", {
+          productId: id,
+          error: e,
+        });
+      }
+    });
+  }
+
+  async updateProductQuantity() {
+    consumeFromQueue("update-product-quantity", async (order: any) => {
       try {
         const product = await this.productRepository.getOne(order.product_id);
 
         const newQuantity = product.quantity - order.quantity;
 
-        const editQuantity = await this.productRepository.edit({
-          id: product.id,
-          name: product.name,
-          quantity: newQuantity,
-          price: product.price
-        }, product.id);
+        await this.productRepository.edit(
+          {
+            id: product.id,
+            name: product.name,
+            quantity: newQuantity,
+            price: product.price,
+          },
+          product.id
+        );
 
         return {
           message: "product updated",
@@ -96,4 +120,3 @@ export class ProductService {
     });
   }
 }
-

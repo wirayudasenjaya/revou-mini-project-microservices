@@ -42,7 +42,7 @@ export class UserController {
       let errorMsg = "Server error";
 
       if (e instanceof Error) {
-        errorMsg = e.message;
+        errorMsg = e.toString();
       }
 
       res.status(500).json({ error: errorMsg });

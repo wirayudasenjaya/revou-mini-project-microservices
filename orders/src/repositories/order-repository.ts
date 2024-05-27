@@ -26,6 +26,7 @@ export class OrderRepository {
             product_id: rows[i].product_id,
             user_id: rows[i].user_id,
             quantity: rows[i].quantity,
+            status: rows[i].status
           });
         }
 
@@ -68,5 +69,23 @@ export class OrderRepository {
         );
       });
     });
+  }
+
+  async orderStatus(id: number, status: string) {
+    return new Promise<number>((resolve, reject) => {
+      const q = `UPDATE orders SET status = ? WHERE id = ?`;
+      this.db.query(
+        q,
+        [status, id],
+        (err, rows: mysql2.ResultSetHeader) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          resolve(rows.affectedRows);
+        }
+      );
+    })
   }
 }

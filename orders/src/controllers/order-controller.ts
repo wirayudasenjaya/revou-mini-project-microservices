@@ -35,6 +35,7 @@ export class OrderController {
       const createOrderResponse = await this.orderService.create(
         createOrderRequest
       );
+      console.log('controller', createOrderResponse);
 
       res.status(200).json({
         data: createOrderResponse,
