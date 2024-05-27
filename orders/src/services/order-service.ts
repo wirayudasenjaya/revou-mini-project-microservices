@@ -1,6 +1,7 @@
 import { CreateOrderRequest, GetAllOrderResponse } from "../models/order-model";
 import { OrderRepository } from "../repositories/order-repository";
 import { consumeFromQueue, sendToQueue } from "../consumers/order-consumer";
+import { sendToKafkaQueue } from "../consumers/order-consumer-kafka";
 
 export class OrderService {
   private orderRepository: OrderRepository;
@@ -84,6 +85,7 @@ export class OrderService {
             status: orders.status,
           };
 
+          await sendToKafkaQueue("create-order-kafka", orderDetails);
           await sendToQueue("create-order", orderDetails);
           await sendToQueue("update-product-quantity", orderDetails);
 

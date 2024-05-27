@@ -1,6 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import morgan from 'morgan';
+import { Kafka } from "kafkajs";
 
 import { OrderController } from "./controllers/order-controller";
 import { OrderService } from "./services/order-service";
@@ -23,6 +24,8 @@ async function startServer() {
     const orderRouter = express.Router();
     orderRouter.get("/order", orderController.getAll);
     orderRouter.post("/order", orderController.create);
+
+    orderService.processNewOrder();
 
     app.use(orderRouter);
   } catch (e) {

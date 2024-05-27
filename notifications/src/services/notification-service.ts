@@ -1,4 +1,5 @@
 import { consumeFromQueue } from "../consumers/notification-consumer";
+import { consumeFromKafkaQueue } from "../consumers/notification-consumer-kafka";
 import { NotificationRepository } from "../repositories/notification-repository";
 
 export class NotificationService {
@@ -18,6 +19,8 @@ export class NotificationService {
           message: "Notification Created",
           date: new Date(),
         });
+
+        await consumeFromKafkaQueue(this.notificationRepository);
 
         return {
           id: orders,
