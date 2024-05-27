@@ -11,9 +11,9 @@ const app = express();
 
 async function startServer() {
   try {
-    const db = await mysqlConnection();
+    const database = await mysqlConnection();
 
-    const productRepository = new ProductRepository(db);
+    const productRepository = new ProductRepository(database);
     const productService = new ProductService(productRepository);
     const productController = new ProductController(productService);
 

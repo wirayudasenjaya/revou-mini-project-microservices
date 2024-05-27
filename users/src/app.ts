@@ -11,9 +11,9 @@ const app = express();
 
 async function startServer() {
   try {
-    const db = await mysqlConnection();
+    const database = await mysqlConnection();
 
-    const userRepository = new UserRepository(db);
+    const userRepository = new UserRepository(database);
     const userService = new UserService(userRepository);
     const userController = new UserController(userService);
 

@@ -9,9 +9,9 @@ const app = express();
 
 async function startServer() {
   try {
-    const db = await mysqlConnection();
+    const database = await mysqlConnection();
 
-    const notificationRepository = new NotificationRepository(db);
+    const notificationRepository = new NotificationRepository(database);
     const notificationService = new NotificationService(notificationRepository);
 
     notificationService.createNotification();

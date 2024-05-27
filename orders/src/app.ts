@@ -12,9 +12,9 @@ const app = express();
 
 async function startServer() {
   try {
-    const db = await mysqlConnection();
+    const database = await mysqlConnection();
 
-    const orderRepository = new OrderRepository(db);
+    const orderRepository = new OrderRepository(database);
     const orderService = new OrderService(orderRepository);
     const orderController = new OrderController(orderService);
 
