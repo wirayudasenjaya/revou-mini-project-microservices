@@ -1,5 +1,6 @@
 import mysql2 from "mysql2";
 import { NotificationModel } from "../models/notification-model";
+import { notificationQueries } from "../queries/notification-query";
 
 export class NotificationRepository {
   private db: mysql2.Connection;
@@ -10,9 +11,8 @@ export class NotificationRepository {
 
 	create(notificationModel: NotificationModel): Promise<number> {
     return new Promise<number>((resolve, reject) => {
-      const q = `INSERT INTO notifications(message) values (?)`;
       this.db.query(
-        q,
+        notificationQueries.create,
         [notificationModel.message],
         (err, rows: mysql2.ResultSetHeader) => {
           if (err) {

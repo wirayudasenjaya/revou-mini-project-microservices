@@ -1,5 +1,7 @@
 import mysql2 from "mysql2";
+
 import { ProductModel } from "../models/product-model";
+import { productQueries } from "../queries/product-query";
 
 export class ProductRepository {
   private db: mysql2.Connection;
@@ -10,58 +12,62 @@ export class ProductRepository {
 
   getAll(): Promise<ProductModel[]> {
     return new Promise<ProductModel[]>((resolve, reject) => {
-      const q = `SELECT * FROM products`;
-      this.db.query(q, (err, rows: mysql2.RowDataPacket[]) => {
-        if (err) {
-          reject(err);
-          return;
+      this.db.query(
+        productQueries.getAll,
+        (err, rows: mysql2.RowDataPacket[]) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          let products: ProductModel[] = [];
+
+          for (let i = 0; i < rows.length; i++) {
+            products.push({
+              id: rows[i].id,
+              name: rows[i].name,
+              quantity: rows[i].quantity,
+              price: rows[i].price,
+            });
+          }
+
+          resolve(products);
         }
-
-        let products: ProductModel[] = [];
-
-        for (let i = 0; i < rows.length; i++) {
-          products.push({
-            id: rows[i].id,
-            name: rows[i].name,
-            quantity: rows[i].quantity,
-            price: rows[i].price,
-          });
-        }
-
-        resolve(products);
-      });
+      );
     });
   }
 
   getOne(product_id: number): Promise<ProductModel> {
     return new Promise<ProductModel>((resolve, reject) => {
-      const q = `SELECT * FROM products WHERE id = ?`;
-      this.db.query(q, [product_id], (err, rows: mysql2.RowDataPacket[]) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+      this.db.query(
+        productQueries.getOne,
+        [product_id],
+        (err, rows: mysql2.RowDataPacket[]) => {
+          if (err) {
+            reject(err);
+            return;
+          }
 
-        if (rows.length == 0) {
-          reject("data not found");
-          return;
-        }
+          if (rows.length == 0) {
+            reject("data not found");
+            return;
+          }
 
-        resolve({
-          id: rows[0].id,
-          name: rows[0].name,
-          quantity: rows[0].quantity,
-          price: rows[0].price
-        });
-      });
+          resolve({
+            id: rows[0].id,
+            name: rows[0].name,
+            quantity: rows[0].quantity,
+            price: rows[0].price,
+          });
+        }
+      );
     });
   }
 
   add(productModel: ProductModel): Promise<number> {
     return new Promise<number>((resolve, reject) => {
-      const q = `INSERT INTO products(name, quantity, price) values (?, ?, ?)`;
       this.db.query(
-        q,
+        productQueries.add,
         [productModel.name, productModel.quantity, productModel.price],
         (err, rows: mysql2.ResultSetHeader) => {
           if (err) {
@@ -80,12 +86,11 @@ export class ProductRepository {
       const updatedData = {
         name: productModel.name,
         quantity: productModel.quantity,
-        price: productModel.price
-      }
+        price: productModel.price,
+      };
 
-      const q = `UPDATE products SET ? WHERE id = ?`;
       this.db.query(
-        q,
+        productQueries.edit,
         [updatedData, id],
         (err, rows: mysql2.ResultSetHeader) => {
           if (err) {
@@ -102,7 +107,7 @@ export class ProductRepository {
   delete(id: number) {
     return new Promise((resolve, reject) => {
       this.db.query(
-        `DELETE FROM products WHERE id = ?`,
+        productQueries.delete,
         [id],
         (err, rows: mysql2.ResultSetHeader) => {
           if (err) {

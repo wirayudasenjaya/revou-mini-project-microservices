@@ -1,5 +1,7 @@
 import mysql2 from "mysql2";
+
 import { UserModel } from "../models/user-model";
+import { userQueries } from "../queries/user-query";
 
 export class UserRepository {
   private db: mysql2.Connection;
@@ -11,7 +13,7 @@ export class UserRepository {
   create(UserModel: UserModel) {
     return new Promise<number>((resolve, reject) => {
       this.db.query(
-        "INSERT INTO users(email, password, name) values(?, ?, ?)",
+        userQueries.create,
         [UserModel.email, UserModel.password, UserModel.name],
         (err, rows: mysql2.ResultSetHeader) => {
           if (err) {
@@ -28,7 +30,7 @@ export class UserRepository {
   getByEmail(email: string) {
     return new Promise<UserModel>((resolve, reject) => {
       this.db.query(
-        "SELECT * FROM users WHERE email = ?",
+        userQueries.getByEmail,
         [email],
         (err, rows: mysql2.RowDataPacket[]) => {
           if (err) {
