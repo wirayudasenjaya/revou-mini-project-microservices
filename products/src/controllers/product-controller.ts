@@ -96,7 +96,7 @@ export class ProductController {
     try {
       const product_id = Number(req.params.product_id);
 
-      const deleteProduct = await this.productService.delete(product_id);
+      await this.productService.delete(product_id);
 
       res.status(200).json({
         message: 'deleted',

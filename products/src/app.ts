@@ -6,6 +6,7 @@ import { ProductController } from "./controllers/product-controller";
 import { ProductService } from "./services/product-service";
 import { ProductRepository } from "./repositories/product-repository";
 import { mysqlConnection } from "./lib/database";
+import { authenticationMiddleware } from "./middlewares/middleware";
 
 const app = express();
 
@@ -21,6 +22,7 @@ async function startServer() {
     app.use(morgan("dev"));
 
     const productRouter = express.Router();
+    productRouter.use(authenticationMiddleware);
     productRouter.get("/product", productController.getAll);
     productRouter.get("/product/:product_id", productController.getOne);
     productRouter.post("/product/add", productController.add);
