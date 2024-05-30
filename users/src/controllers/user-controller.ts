@@ -21,12 +21,18 @@ export class UserController {
       });
     } catch (e) {
       let errorMsg = "Server error";
+      let status = 500
 
       if (e instanceof Error) {
-        errorMsg = e.message;
+        if(e.message.includes("Duplicate")) {
+          errorMsg = 'User already exists';
+          status = 400;
+        } else {
+          errorMsg = e.message;
+        }
       }
 
-      res.status(500).json({ error: errorMsg });
+      res.status(status).json({ error: errorMsg });
     }
   };
 
@@ -40,12 +46,16 @@ export class UserController {
       });
     } catch (e) {
       let errorMsg = "Server error";
+      let status = 500;
 
       if (e instanceof Error) {
-        errorMsg = e.toString();
+        errorMsg = e.message;
+        if (e.message === 'Invalid Credentials') {
+          status = 401;
+        }
       }
 
-      res.status(500).json({ error: errorMsg });
+      res.status(status).json({ error: errorMsg });
     }
   };
 }

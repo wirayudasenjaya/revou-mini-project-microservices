@@ -33,7 +33,7 @@ export class UserService {
     const isPasswordMatched = await bcrypt.compare(loginUserRequest.password, user.password);
 
     if (!isPasswordMatched) {
-        throw new Error("Invalid Password")
+      throw new Error("Invalid Credentials")
     }
 
     const generatedToken = await generateJwtToken(user.id);
