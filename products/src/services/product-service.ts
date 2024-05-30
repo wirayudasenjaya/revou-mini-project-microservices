@@ -51,7 +51,7 @@ export class ProductService {
   }
 
   async edit(editProductRequest: EditProductRequest, id: number) {
-    const editProduct = await this.productRepository.edit(
+    await this.productRepository.edit(
       {
         id: 0,
         name: editProductRequest.name,
@@ -67,7 +67,7 @@ export class ProductService {
   }
 
   async delete(id: number) {
-    const deleteProduct = await this.productRepository.delete(id);
+    await this.productRepository.delete(id);
 
     return {
       message: "deleted",
@@ -75,19 +75,21 @@ export class ProductService {
   }
 
   async getProductQuantity() {
-    consumeFromQueue("product-availability", async (id: number) => {
+    consumeFromQueue("product-availability", async (msg: any) => {
       try {
-        const product = await this.productRepository.getOne(id);
+        const product = await this.productRepository.getOne(msg.product_id);
 
         sendToQueue("get-product-quantity", {
-          productId: id,
+          requestId: msg.request_id,
+          productId: msg.product_id,
           quantity: product.quantity
         });
       } catch (e) {
         console.error("Error getting quantity:", e);
 
         sendToQueue("get-product-quantity", {
-          productId: id,
+          requestId: msg.request_id,
+          productId: msg.product_id,
           error: e,
         });
       }
