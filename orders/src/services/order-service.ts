@@ -12,8 +12,8 @@ export class OrderService {
     this.orderRepository = orderRepository;
   }
 
-  async getAll(): Promise<GetAllOrderResponse[]> {
-    const orders = await this.orderRepository.getAll();
+  async getAll(userId: number): Promise<GetAllOrderResponse[]> {
+    const orders = await this.orderRepository.getAll(userId);
 
     let orderResponse: GetAllOrderResponse[] = [];
 
@@ -23,7 +23,6 @@ export class OrderService {
         product_id: order.product_id,
         user_id: order.user_id,
         quantity: order.quantity,
-        status: order.status,
       });
     });
 
@@ -47,7 +46,6 @@ export class OrderService {
           product_id: createOrderRequest.product_id,
           user_id: createOrderRequest.user_id,
           quantity: createOrderRequest.quantity,
-          status: "Pending",
         };
 
         const orders = await this.orderRepository.create(orderDetails);

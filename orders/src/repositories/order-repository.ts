@@ -10,10 +10,11 @@ export class OrderRepository {
     this.db = db;
   }
 
-  getAll(): Promise<OrderModel[]> {
+  getAll(userId: number): Promise<OrderModel[]> {
     return new Promise<OrderModel[]>((resolve, reject) => {
       this.db.query(
         orderQueries.getAll,
+        [userId],
         (err, rows: mysql2.RowDataPacket[]) => {
           if (err) {
             reject(err);
@@ -27,8 +28,7 @@ export class OrderRepository {
               id: rows[i].id,
               product_id: rows[i].product_id,
               user_id: rows[i].user_id,
-              quantity: rows[i].quantity,
-              status: rows[i].status,
+              quantity: rows[i].quantity
             });
           }
 

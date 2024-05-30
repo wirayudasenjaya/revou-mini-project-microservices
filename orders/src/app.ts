@@ -1,12 +1,12 @@
 import express from "express";
 import "dotenv/config";
 import morgan from 'morgan';
-import { Kafka } from "kafkajs";
 
 import { OrderController } from "./controllers/order-controller";
 import { OrderService } from "./services/order-service";
 import { OrderRepository } from "./repositories/order-repository";
 import { mysqlConnection } from "./lib/database";
+import { authenticationMiddleware } from "./middlewares/middleware";
 
 const app = express();
 
@@ -22,10 +22,9 @@ async function startServer() {
     app.use(morgan("dev"));
 
     const orderRouter = express.Router();
+    orderRouter.use(authenticationMiddleware);
     orderRouter.get("/order", orderController.getAll);
     orderRouter.post("/order", orderController.create);
-
-    orderService.processNewOrder();
 
     app.use(orderRouter);
   } catch (e) {
