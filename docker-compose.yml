@@ -64,6 +64,7 @@ services:
       DATABASE_TABLE: 
       PORT: 
       RABBITMQ_HOST: 
+      JWT_SECRET: 
     networks:
       - microservices
     depends_on:
@@ -82,6 +83,13 @@ services:
       DATABASE_TABLE: 
       PORT: 
       RABBITMQ_HOST: 
+      JWT_SECRET: 
+      KAFKA_CLIENT_ID: 
+      KAFKA_BROKER: 
+      KAFKA_TOPIC: 
+      KAFKA_USERNAME: 
+      KAFKA_PASSWORD: 
+      KAFKA_GROUP_ID: 
     networks:
       - microservices
     depends_on:
@@ -100,6 +108,12 @@ services:
       DATABASE_TABLE: 
       PORT: 
       RABBITMQ_HOST: 
+      KAFKA_CLIENT_ID: 
+      KAFKA_BROKER: 
+      KAFKA_TOPIC: 
+      KAFKA_USERNAME: 
+      KAFKA_PASSWORD: 
+      KAFKA_GROUP_ID: 
     networks:
       - microservices
     depends_on:
