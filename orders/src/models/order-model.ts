@@ -14,6 +14,5 @@ export interface GetAllOrderResponse {
 
 export interface CreateOrderRequest {
 	product_id: number;
-  user_id: number;
   quantity: number;
 }

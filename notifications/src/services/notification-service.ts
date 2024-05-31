@@ -16,7 +16,7 @@ export class NotificationService {
       try {
         const orders = await this.notificationRepository.create({
           id: 0,
-          message: "Notification Created",
+          message: `Notification Created: ${JSON.stringify(order)}`,
           date: new Date(),
         });
 

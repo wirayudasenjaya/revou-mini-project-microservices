@@ -29,7 +29,7 @@ export class OrderService {
     return orderResponse;
   }
 
-  async create(createOrderRequest: CreateOrderRequest) {
+  async create(createOrderRequest: CreateOrderRequest, userId: number) {
     try {
       const requestId = uuidv4();
 
@@ -44,16 +44,16 @@ export class OrderService {
         const orderDetails = {
           id: 0,
           product_id: createOrderRequest.product_id,
-          user_id: createOrderRequest.user_id,
+          user_id: userId,
           quantity: createOrderRequest.quantity,
         };
 
         const orders = await this.orderRepository.create(orderDetails);
 
-        await sendToKafkaQueue("create-order-kafka", {
-          ...orderDetails,
-          id: orders,
-        });
+        // await sendToKafkaQueue("create-order-kafka", {
+        //   ...orderDetails,
+        //   id: orders,
+        // });
         await sendToQueue("create-order", { ...orderDetails, id: orders });
         await sendToQueue("update-product-quantity", orderDetails);
 
